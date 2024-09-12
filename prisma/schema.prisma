@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  IdAdmin  Int    @id @default(autoincrement())
+  nama     String @db.Text
+  kontak   String @default("")
+  alamat   String @unique @default("")
+  username String @default("")
+  password String @default("")
+}
+
+model pegawai {
+  IdPegawai    Int    @id @default(autoincrement())
+  nama         String @db.Text
+  TanggalLahir Int    @default(11)
+  kontak       String @default("")
+  alamat       String @unique @default("")
+  username     String @default("")
+  password     String @default("")
+}
+
+model barang {
+  idBarang        Int               @id @default(autoincrement())
+  NamaBarang      String            @default("")
+  BeratBarang     Int               @default(11)
+  BanyakBarang    Int               @default(11)
+  AlamatBarang    String            @db.VarChar(255)
+  HargaBarang     Float
+  FotoBarang      String            @default("")
+  detailTransaksi detailTransaksi[]
+}
+
+model detailTransaksi {
+  idDetailTransaksi String  @id @unique
+  barang            barang  @relation(fields: [IdBarang], references: [idBarang])
+  IdBarang          Int
+  TotalBarang       Int     @default(11)
+  TotalPembayaran   Boolean
+}
+
+model transaksi {
+  idTransaksi      Int             @id @default(autoincrement())
+  ekspedisi        String          @db.VarChar(255)
+  statusTransaksi  String          @db.VarChar(255)
+  TanggalTransaksi String          @db.VarChar(255)
+  JenisPembayaran  JenisPembayaran @default(Cash)
+}
+
+model pelanggan {
+  idPelanggan     Int    @id @default(autoincrement())
+  NamaPelanggan   String @default("")
+  TanggalLahir    Int    @default(11)
+  KontakPelanggan String @db.VarChar(255)
+  AlamatPelanggan String @db.VarChar(255)
+  username     String @default("")
+  password     String @default("")
+}
+
+enum JenisPembayaran {
+  Cash
+  Dana
+}
